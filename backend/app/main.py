@@ -1,11 +1,30 @@
 from fastapi import FastAPI
-from app.routes.recommend import router
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+from app.routes.recommend import router as recommend_router
+from app.routes.tmdb import router as tmdb_router
 
-app.include_router(router)
+app = FastAPI(
+    title="Movie Recommendation API"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(recommend_router)
+app.include_router(tmdb_router)
 
 
 @app.get("/")
 def home():
-    return {"message": "Movie Recommendation API Running"}
+    return {
+        "message": "Movie Recommendation API Running 🚀"
+    }
